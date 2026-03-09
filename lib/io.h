@@ -12,6 +12,6 @@ typedef union {
 
 vec2_res get_pointer_pos();
 int  move_cursor(int x, int y);
-int  send_key(KeySym key);
+int  send_key(char *key);
 
 #endif /*MOUSE_H_*/

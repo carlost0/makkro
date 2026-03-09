@@ -1,12 +1,14 @@
+#include <stdio.h>
+#include <strings.h>
+#include <unistd.h>
+
+#include "../../lib/io.h"
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 
-#include "../../lib/io.h"
 
-#include <stdio.h>
-#include <strings.h>
-#include <unistd.h>
 
 vec2_res get_pointer_pos() {
     vec2_res res;
@@ -82,7 +84,7 @@ int move_cursor(int x, int y) {
     return 0;
 }
 
-int send_key(KeySym key) {
+int send_key(char *key) {
     if (key == NoSymbol) {
         perror("no valid keysymbol found :(\nError");
         return -1;
@@ -133,7 +135,7 @@ int send_key(KeySym key) {
     event.y_root = 0;
     event.time = CurrentTime;
     event.state = 0;
-    event.keycode = XKeysymToKeycode(display, key);
+    event.keycode = XKeysymToKeycode(display, XStringToKeysym(key));
 
     if (event.keycode == 0) {
         perror("unable to translate keysym to keycode :(\nError");

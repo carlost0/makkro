@@ -3,6 +3,30 @@
 
 #include "../lib/io.h"
 
+typedef struct {
+    char *str;
+    int   argc;
+} keyword_t;
+
+keyword_t keywords[] = {
+    {    /* move pointer to x y */
+        .str  = "mv",
+        .argc = 2,
+    }, { /* sleep for n seconds */
+        .str  = "sleep",
+        .argc = 1,
+    }, { /* press key */
+        .str  = "pkey",
+        .argc = 1,
+    }, { /* hold key */
+        .str  = "hkey",
+        .argc = 1,
+    }, { /* prints a variable */
+        .str  = "put",
+        .argc = 1,
+    },
+};
+
 char *file_to_str(char *filename) {
     FILE *file;
     file = fopen(filename, "rb");

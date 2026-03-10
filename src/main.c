@@ -12,7 +12,10 @@
 #include "../lib/io.h"
 
 int main() {
-    if (send_key("a") < 0)
+    if (send_str("printf a") < 0)
+        return -1;
+
+    if (send_key("Return") < 0)
         return -1;
 
     return 0;

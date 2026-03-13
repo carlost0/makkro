@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../lib/io.h"
+#include "io.h"
 
 typedef struct {
     char *str;
@@ -16,10 +16,10 @@ keyword_t keywords[] = {
         .str  = "sleep",
         .argc = 1,
     }, { /* press key */
-        .str  = "pkey",
-        .argc = 1,
-    }, { /* hold key */
         .str  = "hkey",
+        .argc = 2,
+    }, { /* hold key */
+        .str  = "pkey",
         .argc = 1,
     }, { /* prints a variable */
         .str  = "put",
@@ -27,7 +27,8 @@ keyword_t keywords[] = {
     },
 };
 
-char *file_to_str(char *filename) {
+char **file_to_str(char *filename) {
+    /*
     FILE *file;
     file = fopen(filename, "rb");
 
@@ -58,6 +59,23 @@ char *file_to_str(char *filename) {
     fclose(file);
 
     return buf;
+    */
+    FILE *file;
+    char line_buf[256];
+    size_t filesize;
+
+    file = fopen(filename, "r");
+
+    if (file == NULL) {
+        perror("unable to open file:(\nError");
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    filesize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    
 }
 
 int main(int argc, char *argv[]) {
@@ -69,7 +87,7 @@ int main(int argc, char *argv[]) {
     char *filebuf;
     filebuf = file_to_str(argv[1]);
 
-    printf("%s", filebuf);
+
 
     free(filebuf);
 

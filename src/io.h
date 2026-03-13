@@ -1,6 +1,10 @@
 #ifndef MOUSE_H_
 #define MOUSE_H_
 
+#ifndef _STDBOOL_H
+    #include <stdbool.h>
+#endif /* _STDBOOL_H */
+
 typedef struct {
     int x, y;
 } vec2;
@@ -19,4 +23,5 @@ bool     check_uppercase(char c);
 #ifdef USE_X11
     XKeyEvent init_xkey_event(Display *display, Window root_win, Window win, char *key);
 #endif /* USE_X11  */
+
 #endif /* MOUSE_H_ */

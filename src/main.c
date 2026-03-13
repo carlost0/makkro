@@ -9,7 +9,7 @@
     #include <X11/keysym.h>
 #endif /*USE_X11*/
 
-#include "../lib/io.h"
+#include "io.h"
 
 int main() {
     if (send_str("printf a") < 0)

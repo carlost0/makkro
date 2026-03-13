@@ -6,7 +6,7 @@
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 
-#include "../../lib/io.h"
+#include "io.h"
 
 bool check_uppercase(char c) {
     if (c > 64 && c < 91)
@@ -165,13 +165,14 @@ int send_key(char *key) {
 }
 
 int send_str(char *str) {
-    XKeyEvent event;
-    Display *display;
-    Window root_win;
-    Window win;
-    int rev_to;
-    vec2_res root_pos;
-    char c[1];
+    XKeyEvent  event;
+    Display   *display;
+    Window     root_win;
+    Window     win;
+    int        rev_to;
+    vec2_res   root_pos;
+
+    char       c[1];
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {

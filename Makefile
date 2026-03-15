@@ -6,7 +6,11 @@ clean:
 	-rm *.o
 	-rm makkro
 
-x11:
+lib:
 	${CC} ${CFLAGS} -c src/x11*.c
-	ar -cvq x11_io.a *.o
-	${CC} ${CFLAGS} -DUSE_X11 -o makkro src/main.c x11_io.a -lX11
+	ar -cvq x11.a *.o
+
+lang:
+	${CC} ${CFLAGS} -DUSE_X11 -o makkro src/interpreter.c x11_io.a -lX11
+
+

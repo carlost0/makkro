@@ -12,11 +12,11 @@
 #include "io.h"
 
 int main() {
-    if (send_str("printf a") < 0)
-        return -1;
-
-    if (send_key("Return") < 0)
-        return -1;
+    vec2_res pos;
+    for (;;) {
+        pos = get_pointer_pos();
+        printf("%d, %d\n", pos.vec.x, pos.vec.y);
+    }
 
     return 0;
 }

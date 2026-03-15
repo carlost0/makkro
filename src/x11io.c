@@ -1,12 +1,20 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
+#include <time.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 
 #include "io.h"
+
+void delay(int ms) {
+    clock_t start_time = clock();
+    clock_t wait_time = ms * (CLOCKS_PER_SEC / 1000);
+
+    while (clock() - start_time < wait_time);
+}
 
 bool check_uppercase(char c) {
     if (c > 64 && c < 91)
@@ -103,6 +111,83 @@ int move_cursor(int x, int y) {
 
     XFlush(display);
     XCloseDisplay(display);
+    return 0;
+}
+
+int send_mb(unsigned char button) {
+    if (button > 5) {
+        perror("unable to find keysym for button :(\nError");
+        return -1;
+    }
+
+    XEvent event;
+    Display *display;
+    Window root_win;
+    Window win;
+    int rev_to;
+    vec2_res root_pos;
+
+    memset(&event, 0, sizeof(XEvent));
+
+    KeySym buttons[5] = {
+        XK_Pointer_Button1,
+        XK_Pointer_Button2,
+        XK_Pointer_Button3,
+        XK_Pointer_Button4,
+        XK_Pointer_Button5,
+    };
+
+    display = XOpenDisplay(NULL);
+    if (display == NULL) {
+        perror("unable to open X display :(\nError");
+        return -1;
+    }
+
+    root_win = DefaultRootWindow(display);
+    if (root_win == 0) {
+        perror("unable to find X root window :(\nError");
+        XCloseDisplay(display);
+        return -1;
+    }
+
+    XGetInputFocus(display, &win, &rev_to);
+    if (win == None) {
+        perror("unable to find focused window :(\nError");
+        XCloseDisplay(display);
+        return -1;
+    }
+
+    root_pos = get_pointer_pos();
+    if (root_pos.err < 0) {
+        XCloseDisplay(display);
+        return -1;
+    }
+
+
+    event.xbutton.display = display;
+    event.xbutton.window = win;
+    event.xbutton.root = root_win;
+    event.xbutton.x = root_pos.vec.x;
+    event.xbutton.y = root_pos.vec.y;
+    event.xbutton.x_root = root_pos.vec.x;
+    event.xbutton.y_root = root_pos.vec.y;
+    event.xbutton.subwindow = root_win;
+    event.xbutton.button = /*buttons[button - 1]*/ button;
+    event.xbutton.same_screen = True;
+
+    event.xbutton.type = ButtonPress;
+    event.xbutton.time = CurrentTime;
+    XSendEvent(display, win, True, ButtonPressMask | ButtonReleaseMask, &event);
+    XFlush(display);
+
+    delay(200);
+
+    event.xbutton.type = ButtonRelease;
+    XSendEvent(display, win, True, ButtonReleaseMask, &event);
+    XFlush(display);
+
+    XCloseDisplay(display);
+
     return 0;
 }
 

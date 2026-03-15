@@ -1,34 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "io.h"
 
-typedef struct {
-    char *str;
-    int   argc;
-} keyword_t;
+typedef enum {
+    mov,
+    str,
+    key,
+    but,
+    arg,
+    next,
+} token_e;
 
-keyword_t keywords[] = {
-    {    /* move pointer to x y */
-        .str  = "mv",
-        .argc = 2,
-    }, { /* sleep for n seconds */
-        .str  = "sleep",
-        .argc = 1,
-    }, { /* press key */
-        .str  = "hkey",
-        .argc = 2,
-    }, { /* hold key */
-        .str  = "pkey",
-        .argc = 1,
-    }, { /* prints a variable */
-        .str  = "put",
-        .argc = 1,
-    },
+typedef struct {
+    char    *val;
+    token_e  type;
+} token_t;
+
+struct token_node {
+    token_t            token;
+    struct token_node *next;
 };
 
-char **file_to_str(char *filename) {
-    /*
+void push(struct token_node *head, token_t token) {
+    struct token_node *current;
+    current = head;
+
+    while (current->next != NULL)
+        current = current->next;
+
+    current->next = (struct token_node *) malloc(sizeof(struct token_node));
+    current->next->token = token;
+
+    current->next->next  = NULL;
+}
+
+char* file_to_str(char *filename) {
     FILE *file;
     file = fopen(filename, "rb");
 
@@ -59,23 +67,41 @@ char **file_to_str(char *filename) {
     fclose(file);
 
     return buf;
-    */
-    FILE *file;
-    char line_buf[256];
-    size_t filesize;
+}
 
-    file = fopen(filename, "r");
+token_e val_to_token(char *val) {
+    if (strcmp(val, "mov"))
+        return mov;
+    else if (strcmp(val, "str"))
+        return str;
+    else if (strcmp(val, "key"))
+        return key;
+    else if (strcmp(val, "but"))
+        return but;
+    else if (strcmp(val, ";"))
+        return next;
+    else
+        return arg;
+}
 
-    if (file == NULL) {
-        perror("unable to open file:(\nError");
-        return NULL;
+struct token_node* tokenize(char *source_code) {
+    struct token_node *node;
+    token_t token;
+    node = (struct token_node *) malloc(sizeof(struct token_node));
+
+    token.val  = strtok(source_code, " ");
+    token.type = val_to_token(token.val);
+
+    while (token.val != NULL) {
+        push(node, token);
+
+        token.val = strtok(NULL, " ");
+        token.type = val_to_token(token.val);
+
+        node = node->next;
     }
 
-    fseek(file, 0, SEEK_END);
-    filesize = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    
+    return node;
 }
 
 int main(int argc, char *argv[]) {
@@ -84,12 +110,17 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    char *filebuf;
-    filebuf = file_to_str(argv[1]);
+    char *source_code;
+    source_code = file_to_str(argv[1]);
 
+    struct token_node *tokens = tokenize(source_code);
 
+    while (tokens != NULL) {
+        printf("%s", tokens->token.val);
+        tokens = tokens->next;
+    }
 
-    free(filebuf);
+    free(source_code);
 
     return 0;
 }

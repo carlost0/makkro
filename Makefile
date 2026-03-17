@@ -14,6 +14,6 @@ lang:
 	${CC} ${CFLAGS} -o lexer.o -c src/lexer.c
 	${CC} ${CFLAGS} -o util.o -c src/util.c -lm
 	${CC} ${CFLAGS} -o parser.o -c src/parser.c 
-	${CC} ${CFLAGS} -DUSE_X11 -o makkro src/makkro.c lexer.o util.o x11.a -lX11 -lm
+	${CC} ${CFLAGS} -DUSE_X11 -o makkro src/makkro.c parser.o lexer.o util.o x11.a -lX11 -lm
 
 

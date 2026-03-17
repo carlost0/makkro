@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -std=c89 -Wall -Wextra
+CFLAGS = -g -std=c89 -Wall -Wextra
 
 clean:
 	-rm *.a
@@ -11,6 +11,9 @@ lib:
 	ar -cvq x11.a *.o
 
 lang:
-	${CC} ${CFLAGS} -DUSE_X11 -o makkro src/interpreter.c x11_io.a -lX11
+	${CC} ${CFLAGS} -o lexer.o -c src/lexer.c
+	${CC} ${CFLAGS} -o util.o -c src/util.c -lm
+	${CC} ${CFLAGS} -o parser.o -c src/parser.c 
+	${CC} ${CFLAGS} -DUSE_X11 -o makkro src/makkro.c lexer.o util.o x11.a -lX11 -lm
 
 

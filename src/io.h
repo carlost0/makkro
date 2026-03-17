@@ -1,5 +1,5 @@
-#ifndef MOUSE_H_
-#define MOUSE_H_
+#ifndef IO_H_
+#define IO_H_
 
 #ifndef _STDBOOL_H
     #include <stdbool.h>
@@ -33,4 +33,4 @@ bool     check_uppercase(char c);
 #ifdef USE_X11
 #endif /* USE_X11  */
 
-#endif /* MOUSE_H_ */
+#endif /* IO_H_ */

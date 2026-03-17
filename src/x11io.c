@@ -172,7 +172,7 @@ int send_mb(unsigned char button) {
     event.xbutton.x_root = root_pos.vec.x;
     event.xbutton.y_root = root_pos.vec.y;
     event.xbutton.subwindow = root_win;
-    event.xbutton.button = /*buttons[button - 1]*/ button;
+    event.xbutton.button = button;
     event.xbutton.same_screen = True;
 
     event.xbutton.type = ButtonPress;

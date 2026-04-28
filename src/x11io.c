@@ -46,7 +46,7 @@ vec2_res get_pointer_pos() {
     Display *display;
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        perror("unable to open X display :(\nError:");
+        perror("unable to open X display :(\nerror:");
         res.err = -1;
         return res;
     }
@@ -54,7 +54,7 @@ vec2_res get_pointer_pos() {
     Window root_window;
     root_window = DefaultRootWindow(display);
     if (root_window == 0) {
-        perror("unable to find X root window :(\nError:");
+        perror("unable to find X root window :(\nerror:");
         res.err = -1;
         return res;
     }
@@ -76,7 +76,7 @@ vec2_res get_pointer_pos() {
         &window.y,
         &mask))
     {
-        perror("unable to find pointer :(\nError:");
+        perror("unable to find pointer :(\nerror:");
         res.err = -1;
         XCloseDisplay(display);
         return res;
@@ -89,14 +89,14 @@ int move_cursor(int x, int y) {
     Display *display;
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        perror("unable to open X display :(\nError");
+        perror("unable to open X display :(\nerror");
         return -1;
     }
 
     Window root_window;
     root_window = DefaultRootWindow(display);
     if (root_window == 0) {
-        perror("unable to find X root window :(\nError");
+        perror("unable to find X root window :(\nerror");
         XCloseDisplay(display);
         return -1;
     }
@@ -116,7 +116,7 @@ int move_cursor(int x, int y) {
 
 int send_mb(unsigned char button) {
     if (button > 5) {
-        perror("unable to find keysym for button :(\nError");
+        perror("unable to find keysym for button :(\nerror");
         return -1;
     }
 
@@ -139,20 +139,20 @@ int send_mb(unsigned char button) {
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        perror("unable to open X display :(\nError");
+        perror("unable to open X display :(\nerror");
         return -1;
     }
 
     root_win = DefaultRootWindow(display);
     if (root_win == 0) {
-        perror("unable to find X root window :(\nError");
+        perror("unable to find X root window :(\nerror");
         XCloseDisplay(display);
         return -1;
     }
 
     XGetInputFocus(display, &win, &rev_to);
     if (win == None) {
-        perror("unable to find focused window :(\nError");
+        perror("unable to find focused window :(\nerror");
         XCloseDisplay(display);
         return -1;
     }
@@ -201,20 +201,20 @@ int send_key(char *key) {
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        perror("unable to open X display :(\nError");
+        perror("unable to open X display :(\nerror");
         return -1;
     }
 
     root_win = DefaultRootWindow(display);
     if (root_win == 0) {
-        perror("unable to find X root window :(\nError");
+        perror("unable to find X root window :(\nerror");
         XCloseDisplay(display);
         return -1;
     }
 
     XGetInputFocus(display, &win, &rev_to);
     if (win == None) {
-        perror("unable to find focused window :(\nError");
+        perror("unable to find focused window :(\nerror");
         XCloseDisplay(display);
         return -1;
     }
@@ -230,7 +230,7 @@ int send_key(char *key) {
     event = init_xkey_event(display, root_win, win, key);
 
     if (event.keycode == 0) {
-        perror("unable to translate keysym to keycode :(\nError");
+        perror("unable to translate keysym to keycode :(\nerror");
         return -1;
     }
 
@@ -261,20 +261,20 @@ int send_str(char *str) {
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        perror("unable to open X display :(\nError");
+        perror("unable to open X display :(\nerror");
         return -1;
     }
 
     root_win = DefaultRootWindow(display);
     if (root_win == 0) {
-        perror("unable to find X root window :(\nError");
+        perror("unable to find X root window :(\nerror");
         XCloseDisplay(display);
         return -1;
     }
 
     XGetInputFocus(display, &win, &rev_to);
     if (win == None) {
-        perror("unable to find focused window :(\nError");
+        perror("unable to find focused window :(\nerror");
         XCloseDisplay(display);
         return -1;
     }
@@ -296,7 +296,7 @@ int send_str(char *str) {
         }
 
         if (event.keycode == 0) {
-            perror("unable to translate keysym to keycode :(\nError");
+            perror("unable to translate keysym to keycode :(\nerror");
             return -1;
         }
 

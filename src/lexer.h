@@ -21,9 +21,7 @@ struct token_node {
     struct token_node *next;
 };
 
-int                push(struct token_node *head, token_t token);
 void               free_tokens(struct token_node *head);
-token_e            val_to_token(char *val);
 struct token_node* tokenize(char *source_code);
 
 #endif /* LEXER_H_ */

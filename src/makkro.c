@@ -20,7 +20,6 @@ int main(int argc, char *argv[]) {
     source_code = file_to_str(argv[1]);
 
     struct token_node *tokens = tokenize(source_code);
-    eval(tokens);
 
     free(source_code);
     free_tokens(tokens);

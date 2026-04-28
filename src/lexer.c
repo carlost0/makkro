@@ -4,6 +4,9 @@
 
 #include "lexer.h"
 
+int      push(struct token_node *head, token_t token);
+token_e  val_to_token(char *val);
+
 /* push node to the end of the linked list */
 int push(struct token_node *head, token_t token) {
     struct token_node *current;
@@ -15,7 +18,7 @@ int push(struct token_node *head, token_t token) {
     current->next = (struct token_node *) malloc(sizeof(struct token_node));
 
     if (current->next == NULL) {
-        perror("unable to allocate memroy :(\nError");
+        perror("unable to allocate memroy :(\nerror");
         return -1;
     }
 
@@ -57,7 +60,7 @@ struct token_node* tokenize(char *source_code) {
     head = (struct token_node *) malloc(sizeof(struct token_node));
 
     if (head == NULL) {
-        perror("unable to allocate memory :(\nError");
+        perror("unable to allocate memory :(\nerror");
         exit(1);
     }
 

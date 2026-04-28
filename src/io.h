@@ -1,9 +1,7 @@
 #ifndef IO_H_
 #define IO_H_
 
-#ifndef _STDBOOL_H
-    #include <stdbool.h>
-#endif /* _STDBOOL_H */
+#include <stdbool.h>
 
 #ifdef USE_X11
     #include <X11/Xlib.h>

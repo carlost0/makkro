@@ -9,7 +9,7 @@
 
 unsigned int str_to_uint(char *str) {
     if (!is_num(str)) {
-        perror("unable to convert string to int :(\nError");
+        perror("unable to convert string to int :(\nerror");
         return -1;
     }
 
@@ -74,7 +74,7 @@ char* file_to_str(char *filename) {
     file = fopen(filename, "rb");
 
     if (!file) {
-        perror("unable to open file :(\nError");
+        perror("unable to open file :(\nerror");
         return NULL;
     }
 
@@ -89,7 +89,7 @@ char* file_to_str(char *filename) {
     buf = (char*)malloc(file_size * sizeof(char) + 1);
 
     if (!buf) {
-        perror("unable to allocate memory for file buffer :(\nError");
+        perror("unable to allocate memory for file buffer :(\nerror");
         fclose(file);
         return NULL;
     }

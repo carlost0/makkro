@@ -8,20 +8,25 @@ typedef enum {
     sleep,
     put,
     but,
-} identifier_e;
+} function_e;
 
 typedef union {
     char *str;
     int   num;
 } arg_t;
 
-struct syntax_node {
-    identifier_e identifier;   
-    int argc;
+typedef struct {
+    function_e function;
     arg_t *args;
-    struct syntax_node *next;
+    int argc;
+} callexpr_t;
+
+struct call_node {
+    callexpr_t callexpr;
+    struct call_node *next;
 };
 
-struct syntax_node *eval(struct token_node *node);
+struct call_node *eval(struct token_node *node);
+struct call_node *tokens_to_snode(struct token_node *node);
 
 #endif /* PARSER_H_ */

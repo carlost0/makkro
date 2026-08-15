@@ -1,27 +1,35 @@
 #ifndef LEXER_H_
 #define LEXER_H_
 
+#include "sv.h"
 #include <stdbool.h>
-#include "util.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef enum {
-    string,
-    number,
-    identifier,
-    arrow,
+    TK_NULL,
+    TK_ARROW,
+    TK_STR,
+    TK_STR_END,
+    TK_NUM,
+    TK_IDENTIFIER,
 } token_e;
 
 typedef struct {
-    char    *val;
-    token_e  type;
+    str_view_t val;
+    token_e    type;
 } token_t;
 
-struct token_node {
-    token_t            token;
-    struct token_node *next;
-};
+typedef struct {
+    size_t cap;
+    size_t size;
+    token_t *data;
+} token_da_t;
 
-void               free_tokens(struct token_node *head);
-struct token_node* tokenize(char *source_code);
+
+
+token_da_t tokenize(const str_view_t source_code);
+
 
 #endif /* LEXER_H_ */

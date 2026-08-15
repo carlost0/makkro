@@ -1,15 +1,14 @@
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <math.h>
 
 #include "util.h"
+#include "sv.h"
 
-unsigned int str_to_uint(char *str) {
+unsigned int str_to_uint(const char *str) {
     if (!is_num(str)) {
-        perror("unable to convert string to int :(\nerror");
+        fprintf(stderr, "error: unable to convert string to int :(\n");
         return -1;
     }
 
@@ -18,13 +17,13 @@ unsigned int str_to_uint(char *str) {
     sum = 0;
 
     for (i = 0; i < strlen(str); ++i) {
-        sum += (str[i] - 48) * pow(10, strlen(str) - i - 1);
+        sum += (str[i] - '0') * pow(10, strlen(str) - i - 1);
     }
 
     return sum;
 }
 
-bool is_num(char *str) {
+int is_num(const char *str) {
     size_t i;
     bool ret;
 
@@ -38,67 +37,40 @@ bool is_num(char *str) {
     return ret;
 }
 
-char* trim_str(char *str) {
-    if (str == NULL) return NULL;
- 
-    char *start;
-    char* end;
-    start = str;
-
-    while (isspace((unsigned char)*start)) {
-        start++;
-    }
- 
-    if (*start == '\0') {
-        *str = '\0'; 
-        return str;
-    }
- 
-    end = start;
-    while (*end != '\0') {
-        end++;
-    }
-    end--; 
- 
-    while (end >= start && isspace((unsigned char)*end)) {
-        end--;
-    }
-    end++;  
-    *end = '\0';  
- 
-    return start;
-}
-
-char* file_to_str(char *filename) {
+str_view_t file_to_sv(const char *filename) {
     FILE *file;
+    size_t file_size;
+    char *buf;
+
     file = fopen(filename, "rb");
 
     if (!file) {
-        perror("unable to open file :(\nerror");
-        return NULL;
+        fprintf(stderr, "error: unable to open file :(\n");
+        return (str_view_t) {
+            .size = 0,
+        };
     }
 
     fseek(file, 0, SEEK_END);
 
-    size_t file_size;
     file_size = ftell(file);
 
     fseek(file, 0, SEEK_SET);
 
-    char *buf;
-    buf = (char*)malloc(file_size * sizeof(char) + 1);
+    buf = (char*)malloc(file_size * sizeof(char) + 2);
 
     if (!buf) {
-        perror("unable to allocate memory for file buffer :(\nerror");
+        fprintf(stderr, "error: unable to allocate memory for file buffer :(\n");
         fclose(file);
-        return NULL;
+        return (str_view_t) {
+            .size = 0,
+        };
     }
 
     fread(buf, 1, file_size, file);
-    buf[file_size + 1] = '\0';
+    buf[file_size] = '\0';
 
     fclose(file);
 
-    return buf;
+    return sv(buf);
 }
-

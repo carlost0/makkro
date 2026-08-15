@@ -1,83 +1,62 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "sv.h"
 
 #include "lexer.h"
 
-int      push(struct token_node *head, token_t token);
-token_e  val_to_token(char *val);
+static int token_push(token_da_t *arr, token_t tok) {
+    if (arr->size >= arr->cap) {
+        if (arr->cap == 0) arr->cap = 10u;
 
-/* push node to the end of the linked list */
-int push(struct token_node *head, token_t token) {
-    struct token_node *current;
-    current = head;
+        arr->cap *= 2u;
+        arr->data = (token_t*)realloc(arr->data, arr->cap * sizeof(token_t));
 
-    while (current->next != NULL)
-        current = current->next;
-
-    current->next = (struct token_node *) malloc(sizeof(struct token_node));
-
-    if (current->next == NULL) {
-        perror("unable to allocate memroy :(\nerror");
-        return -1;
+        if (!arr->data) {
+            fprintf(stderr, "unable to allocate memory :(\n");
+            return -1;
+        }
     }
-
-    current->next->token = token;
-
-    current->next->next  = NULL;
+    memcpy(&arr->data[arr->size++], &tok, sizeof(token_t));
     return 0;
 }
 
-void free_tokens(struct token_node *head) {
-    struct token_node *tmp;
-
-    while (head->next != NULL) {
-        tmp = head;
-        head = head->next;
-        free(tmp);
+token_e val_to_token(const str_view_t val) {
+    str_view_t tmp = val;
+    if (sv_isnum(tmp)) {
+        return TK_NUM;
     }
-}
-
-token_e val_to_token(char *val) {
-    if (val[0] == '"' && val[strlen(val) - 1] == '"')
-        return string;
-    else if (is_num(val))
-        return number;
-    else if (strcmp("->", val) == 0)
-        return arrow;
-    else if ((val[0] >= 'A' && val[0] <= 'Z')
-          || (val[0] >= 'a' && val[0] <= 'z'))
-        return identifier;
+    if (tmp.data[tmp.size - 1] == '"') 
+        return TK_STR_END;
+    if (tmp.data[0] == '"')
+        return TK_STR;
+    if (sv_cmp(sv("->"), tmp))
+        return TK_ARROW;
+    if ((tmp.data[0] >= 'A' && tmp.data[0] <= 'Z')
+          || (tmp.data[0] >= 'a' && tmp.data[0] <= 'z'))
+        return TK_IDENTIFIER;
     else
-        return -1;
+        return TK_NULL;
 }
 
-struct token_node* tokenize(char *source_code) {
-    struct token_node *head;
-    token_t token;
-    char *token_val;
 
-    head = (struct token_node *) malloc(sizeof(struct token_node));
+token_da_t tokenize(const str_view_t source_code) {
+    token_da_t tokens;
+    token_t    current;
+    str_view_t sc;
+    tokens  = (token_da_t) {0};
+    current = (token_t) {0};
 
-    if (head == NULL) {
-        perror("unable to allocate memory :(\nerror");
-        exit(1);
+    sc = source_code;
+    
+    while (sc.size > 0) {
+        current = (token_t) {0};
+        str_view_t token_str = {0};
+        token_str = sv_tok(&sc, " ;");
+        sv_trim(&token_str);
+
+        current.type = val_to_token(token_str);
+        current.val  = token_str;
+
+        token_push(&tokens, current);
     }
 
-    head->next = NULL;
-
-    token_val = trim_str(strtok(source_code, " ;"));
-
-    while (token_val != NULL) {
-        token.val = token_val;
-        token.type = val_to_token(token.val);
-
-        if (push(head, token) != 0)
-            return NULL;
-
-        token_val = trim_str(strtok(NULL, " ;"));
-    }
-
-    return head->next != NULL ? head->next : head;
+    return tokens;
 }
-

@@ -1,5 +1,6 @@
 > [!WARNING]
 > this is project is purely for learing purposes and in no way supposed to be used in a real setting.
+>
 
 # makkro
 basic interpreted language for writing macros in the X window system.
@@ -8,7 +9,7 @@ basic interpreted language for writing macros in the X window system.
 as any other *real* language, makkro uses semicolons.
 
 ## functions
-there aren't (yet) any of these fancy features of moders languages, like loops, expressions, self declared functions or control flow,
+there aren't (yet) any of these fancy features of modern languages, like loops, expressions, self declared functions or control flow,
 instead there are just these basic functions:
 
 ### calling a function
